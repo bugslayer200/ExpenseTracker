@@ -1,0 +1,14 @@
+We are ready to automate the deployment of our expense tracker application. Please create a CI/CD pipeline using GitHub Actions that will build and deploy our application to Google Cloud Run.
+Requirements:
+Platform: GitHub Actions.
+Trigger: The workflow should be triggered on every push to the main branch.
+Workflow Steps:
+Checkout Code: The job should start by checking out the repository's code.
+Set up JDK: Configure the environment with Java (Temurin) version 21.
+Build with Maven: Build the Spring Boot application using the command mvn clean install. This will also run the tests.
+Authenticate to Google Cloud: Log in to Google Cloud using a service account key that will be stored as a GitHub secret.
+Build and Push Docker Image:
+Use the existing Dockerfile to build a Docker image.
+Push the image to Google Artifact Registry. The image should be tagged with the latest Git commit SHA for versioning.
+Deploy to Cloud Run: Deploy the newly pushed container image to a Google Cloud Run service.
+Please generate the complete GitHub Actions workflow YAML file. Assume that necessary values like GCP_PROJECT_ID, GCP_REGION, GCP_ARTIFACT_REGISTRY, GCP_CLOUD_RUN_SERVICE_NAME, and the GCP_SA_KEY will be configured as secrets in the GitHub repository.

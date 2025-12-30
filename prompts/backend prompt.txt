@@ -1,0 +1,74 @@
+Prompt 1: Project Initialization and Dependencies
+"Hello Slingshot! Please create a new Spring Boot project for an 'Expense Tracker' application.
+Requirements:
+Build Tool: Maven
+Language: Java 21
+Spring Boot Version: 3.5.7
+Dependencies:
+spring-boot-starter-web: For building RESTful APIs.
+spring-boot-starter-data-jpa: For database interaction with JPA.
+spring-boot-starter-security: For authentication and authorization.
+spring-boot-starter-validation: For request body validation.
+h2database: For an in-memory runtime database (useful for development and testing).
+postgresql: For production database connectivity.
+postgres-socket-factory from com.google.cloud.sql: For connecting to Google Cloud SQL.
+jjwt-api, jjwt-impl, jjwt-jackson: For implementing JWT-based authentication.
+Please generate the pom.xml file with these specifications."
+ 
+Prompt 2: Create the Data Models
+"Now, let's define the core data models as JPA entities. We need a User, Category, and Expense.
+File Details:
+User.java:
+Fields: id (Long, auto-generated), username (String, unique), email (String, unique), password (String).
+Relationships: A one-to-many relationship with Category and Expense. Use @JsonIgnore on these collections to prevent infinite loops during serialization.
+Category.java:
+Fields: id (Long, auto-generated), name (String).
+Relationships: A many-to-one relationship with User. Use @JsonIgnore on the user field.
+Expense.java:
+Fields: id (Long, auto-generated), amount (BigDecimal), date (LocalDate), note (String).
+Relationships: A many-to-one relationship with Category and a many-to-one relationship with User. Use @JsonIgnore on the user field."
+ 
+Prompt 3: Create the Data Repositories
+"Next, create the Spring Data JPA repositories to interact with our database tables.
+File Details:
+UserRepository.java: An interface extending JpaRepository for the User entity. It needs methods to find a user by username or email.
+CategoryRepository.java: An interface extending JpaRepository for the Category entity. It needs a method to find all categories belonging to a specific User.
+ExpenseRepository.java: An interface extending JpaRepository for the Expense entity. It needs methods to find all expenses for a User and to find expenses for a User within a given date range."
+ 
+Prompt 4: Implement Security and Authentication
+"Let's set up JWT-based security and the authentication endpoints.
+Requirements:
+JWT Utility (JwtUtil.java): Create a utility component to generate, parse, and validate JWTs. The JWT secret and expiration time should be configurable via application properties, with safe defaults.
+JWT Filter (JwtAuthenticationFilter.java): Create a filter that intercepts requests, extracts the JWT from the Authorization header, validates it, and sets the user's authentication details in the Spring Security context.
+CORS Configuration (CorsConfig.java): Set up a global CORS policy to allow requests from any origin, which is helpful for development with a separate frontend. Expose the Authorization header so the client can read it.
+Security Configuration (SecurityConfig.java):
+Configure the main SecurityFilterChain.
+Disable CSRF and configure session management to be STATELESS.
+Define public endpoints: /api/auth/** (for login/register) and /h2-console/**.
+Ensure all other endpoints require authentication.
+Integrate the JwtAuthenticationFilter into the chain.
+Provide beans for PasswordEncoder (using BCrypt), UserDetailsService (to load users from UserRepository), and AuthenticationManager.
+User Service (UserService.java): Create a service to handle user registration logic, including encoding the password before saving it.
+Authentication Controller (AuthController.java): Create a REST controller at /api/auth with two endpoints:
+POST /register: Accepts a username, email, and password. It should check for existing users, create a new one, and return a JWT.
+POST /login: Accepts a username and password. It should authenticate the credentials and return a JWT upon success."
+ 
+Prompt 5: Build the Services and API for Categories & Expenses
+"Now, let's build the business logic and API endpoints for managing categories and expenses.
+Services (CategoryService.java, ExpenseService.java): Create service classes that encapsulate the business logic for categories and expenses, using the repositories you created earlier.
+Category Controller (CategoryController.java): Create a secured REST controller for categories with the following endpoints:
+POST /api/categories: Create a new category for the authenticated user.
+GET /api/categories: List all categories for the authenticated user.
+DELETE /api/categories/{id}: Delete a category, but only if it belongs to the authenticated user.
+Expense Controller (ExpenseController.java): Create a secured REST controller for expenses:
+POST /api/expenses: Create a new expense. Handle cases where an existing categoryId is provided or a new category name is given.
+GET /api/expenses: List expenses for the authenticated user, with optional start and end date filtering.
+PUT /api/expenses/{id}: Update an expense, ensuring it belongs to the user.
+DELETE /api/expenses/{id}: Delete an expense, ensuring it belongs to the user."
+ 
+Prompt 6: Add Sample Data and Containerize
+"Finally, let's add some finishing touches to make the application easy to run and test.
+Data Loader (DataLoader.java): Create a CommandLineRunner bean that populates the database with some initial sample data (one user, a few categories, and a few expenses) on application startup. This should only run if the database is empty.
+Dockerfile (Dockerfile): Create a Dockerfile to containerize the application. Use a Java 21 JRE base image, copy the compiled .jar file, expose port 8080, and define the command to run the application."
+
+make a read.me file for this project now using all the above prompts and responses
